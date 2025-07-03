@@ -1,0 +1,29 @@
+{
+  "name": "devgram",
+  "version": "1.0.0",
+  "description": "DEVGRAM is a social platform designed specifically for developers to connect, collaborate, and share their passion for coding",
+  "main": "index.js",
+  "scripts": {
+    "start": "node Src/app.js",
+    "dev": "nodemon Src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohitvashu1/DEVGRAM.git"
+  },
+  "keywords": [
+    "JAVASCRIPT",
+    "NODEJS",
+    "REACTJS"
+  ],
+  "author": "MOHIT CHOUBEY",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohitvashu1/DEVGRAM/issues"
+  },
+  "homepage": "https://github.com/mohitvashu1/DEVGRAM#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
