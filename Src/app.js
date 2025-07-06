@@ -8,14 +8,15 @@ app.use(express.json());//Middelwares
 app.post('/signup', async(req,res)=>{
     
  //Creating a new instance of the user model 
+     const user =new User(req.body);
 
-    const user =new User({
-        firstName : "Vashu",
-        lastName : "Choubey",
-        emailId:"Vashuchoubey1@gmail.com",
-        password:"Vashu@123"
+    // const user =new User({
+    //     firstName : "Vashu",
+    //     lastName : "Choubey",
+    //     emailId:"Vashuchoubey1@gmail.com",
+    //     password:"Vashu@123"
 
-    });
+    // });
 
     try{
      await user.save();
