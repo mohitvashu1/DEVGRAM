@@ -25,6 +25,7 @@
   "homepage": "https://github.com/mohitvashu1/DEVGRAM#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "mongoose": "^8.16.1"
+    "mongoose": "^8.16.1",
+    "validator": "^13.15.15"
   }
 }
