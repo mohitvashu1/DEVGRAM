@@ -6,6 +6,7 @@ const { validateSignUpData } = require("../utils/validation");
 const bcrypt =require('bcrypt');
 const cookieParser =require('cookie-parser');
 const jWT =require("jsonwebtoken");
+const {userAuth}=require("../middlewares/auth")
 
 
 //Middlewares
@@ -50,60 +51,74 @@ app.post('/signup', async(req,res)=>{
 
 
 //Login
-app.post('/login', async (req,res)=>{
+// app.post('/login', async (req,res)=>{
 
-  try{
-     const{emailId,password}=req.body;
+//   try{
+//      const{emailId,password}=req.body;
 
-    const user=await User.findOne({emailId:emailId});
-    if(!user){
-      throw new Error("Email ID is not Registered");
+//     const user=await User.findOne({emailId:emailId});
+//     if(!user){
+//       throw new Error("Email ID is not Registered");
 
+//     }
+//     const isPassordValid= await bcrypt.compare(password,user.password);
+//     if(isPassordValid){
+
+//   //Create a Json Web Token
+
+//     const token = await jWT.sign({_id:user._id}, "DEV@GRAM810");
+//     console.log(token);
+
+//   //Adding the token to cookie and sending back to user
+//       res.cookie("token",token);
+//       res.send("Log-In Successfully");
+//     } else {
+//       throw new Error("Password not Valid");
+//     }
+
+
+//   }catch(err){
+//     res.status(400).send("Error:"+err.message);
+
+//   }
+
+
+// });
+
+
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid credentials");
     }
-    const isPassordValid= await bcrypt.compare(password,user.password);
-    if(isPassordValid){
-
-  //Create a Json Web Token
-
-    const token = await jWT.sign({_id:user._id}, "DEV@GRAM810");
-    console.log(token);
-
-  //Adding the token to cookie and sending back to user
-      res.cookie("token",token);
-      res.send("Log-In Successfully");
+     const isPasswordValid = await user.validatePassword(password);
+     if (isPasswordValid) {
+      // Create a JWT Token
+      const token = await user.getJWT();
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
+      res.send("Login Successful!!!");
     } else {
-      throw new Error("Password not Valid");
+      throw new Error("Invalid credentials");
     }
-
-
-  }catch(err){
-    res.status(400).send("Error:"+err.message);
-
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
   }
-
-
 });
 
 
-app.get("/profile", async (req,res)=>{
+
+
+app.get("/profile", userAuth, async (req,res)=>{
 
 try {
-    const cookies = req.cookies;
 
-    const { token } = cookies;
-    if (!token) {
-      throw new Error("Invalid Token");
-    }
-
-    const decodedMessage = await jWT.verify(token, "DEV@GRAM810");
-
-    const { _id } = decodedMessage;
-
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new Error("User does not exist");
-    }
-
+    const user=req.user;  
     res.send(user);
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
@@ -197,6 +212,14 @@ app.patch("/user/:userId", async (req, res) => {
     res.status(400).send("UPDATE FAILED:" + err.message);
   }
 })
+
+//Send Connection Request
+app.post("/sendConnectionRequest", userAuth, async (req, res) => {
+  const user = req.user;
+  // Sending a connection request
+  console.log("Sending a connection request");
+  res.send(user.firstName + "sent the connect request!");
+});
 
 connectDB().then(()=>{
 console.log("Database Connected successfully");
