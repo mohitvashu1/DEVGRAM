@@ -3,30 +3,66 @@ const connectDB=require("../config/database")
 const app =express();
 const User =require("../models/user")
 app.use(express.json());//Middleware
+const { validateSignUpData } = require("../utils/validation");
+const bcrypt =require('bcrypt');
 
 
-//Creating a new instance of the user model 
-app.post('/addNewUser', async(req,res)=>{
+
+app.post('/signup', async(req,res)=>{
     
-     const user =new User(req.body);
+  try{
+    //Validation of data
+    validateSignUpData(req);
 
-    // const user =new User({
-    //     firstName : "Vashu",
-    //     lastName : "Choubey",
-    //     emailId:"Vashuchoubey1@gmail.com",
-    //     password:"Vashu@123"
-    // });
-    try{
-     await user.save();
-     res.send("User Added Sucessfully")
-    }catch(err){
-         res.status(400).send("Error Saving the user :"+err.message)
+   const { firstName, lastName, emailId, password } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log(passwordHash);
+
+    //   Creating a new instance of the User model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
+  await user.save()
+    res.send("User Added Sucessfully")
+
+  } catch(err){
+    res.status(400).send("Error: "+ err.message)
+  }
+    
+});
+
+
+app.post('/login', async (req,res)=>{
+
+  try{
+     const{emailId,password}=req.body;
+
+    const user=await User.findOne({emailId:emailId});
+    if(!user){
+      throw new Error("Email ID is not Registered");
 
     }
+    const isPassordValid= await bcrypt.compare(password,user.password);
+    if(isPassordValid){
+      res.send("Log-In Successfully");
+    } else {
+      throw new Error("Password not Valid");
+    }
 
-    
-})
 
+  }catch(err){
+    res.status(400).send("Error:"+err.message);
+
+  }
+
+
+});
 
 // GEt All Emails - Find All Email from the database
 app.get('/getEmail' , async(req,res)=>{
@@ -47,7 +83,7 @@ app.get('/getEmail' , async(req,res)=>{
         res.status(404).send("Something Went Wrong :(")
     }
     
-})     
+});   
 
 // Find ONE API - Find One Email from the database
 app.get("/getOneEmail", async (req, res) => {
