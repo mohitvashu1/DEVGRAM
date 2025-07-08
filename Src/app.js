@@ -2,18 +2,28 @@ const express =require('express');
 const connectDB=require("../config/database")
 const app =express();
 const User =require("../models/user")
-app.use(express.json());//Middleware
 const { validateSignUpData } = require("../utils/validation");
 const bcrypt =require('bcrypt');
+const cookieParser =require('cookie-parser');
+const jWT =require("jsonwebtoken");
 
 
+//Middlewares
+app.use(express.json());
+app.use(cookieParser());
 
+
+//SignUP (Add New Users)
 app.post('/signup', async(req,res)=>{
     
   try{
     //Validation of data
     validateSignUpData(req);
+   
+  
+   
 
+   
    const { firstName, lastName, emailId, password } = req.body;
 
     // Encrypt the password
@@ -38,6 +48,8 @@ app.post('/signup', async(req,res)=>{
 });
 
 
+
+//Login
 app.post('/login', async (req,res)=>{
 
   try{
@@ -50,6 +62,14 @@ app.post('/login', async (req,res)=>{
     }
     const isPassordValid= await bcrypt.compare(password,user.password);
     if(isPassordValid){
+
+  //Create a Json Web Token
+
+    const token = await jWT.sign({_id:user._id}, "DEV@GRAM810");
+    console.log(token);
+
+  //Adding the token to cookie and sending back to user
+      res.cookie("token",token);
       res.send("Log-In Successfully");
     } else {
       throw new Error("Password not Valid");
@@ -63,6 +83,33 @@ app.post('/login', async (req,res)=>{
 
 
 });
+
+
+app.get("/profile", async (req,res)=>{
+
+try {
+    const cookies = req.cookies;
+
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Invalid Token");
+    }
+
+    const decodedMessage = await jWT.verify(token, "DEV@GRAM810");
+
+    const { _id } = decodedMessage;
+
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
+  }
+});
+
 
 // GEt All Emails - Find All Email from the database
 app.get('/getEmail' , async(req,res)=>{
