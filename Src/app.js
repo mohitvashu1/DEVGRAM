@@ -1,12 +1,12 @@
 const express =require('express');
-const connectDB=require("../config/database")
+const connectDB=require("./config/database")
 const app =express();
-const User =require("../models/user")
-const { validateSignUpData } = require("../utils/validation");
+const User =require("./models/user")
+const { validateSignUpData } = require("./utils/validation");
 const bcrypt =require('bcrypt');
 const cookieParser =require('cookie-parser');
 const jWT =require("jsonwebtoken");
-const {userAuth}=require("../middlewares/auth")
+const {userAuth}=require("./middlewares/auth")
 
 
 //Middlewares
@@ -198,7 +198,7 @@ app.patch("/user/:userId", async (req, res) => {
   const data = req.body;
 
   try {
-    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+    const ALLOWED_UPDATES = ["photoUrl","lastName", "about", "gender", "age", "skills"];
     const isUpdateAllowed = Object.keys(data).every((k) =>
       ALLOWED_UPDATES.includes(k)
     );
