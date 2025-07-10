@@ -85,3 +85,9 @@ Done so far...
  - Created userSchema method to getJWT() 
  - Created UserSchema method to comparepassword(passwordInputByUser)
 
+ - Created routes folder for managing auth,profile, request routers
+ - created authRouter, profileRouter, requestRouter
+ - Imported these routers in app.js
+ - Created POST /logout API
+ - Created PATCH /profile/edit
+ - Created PATCH /profile/password API => forgot password API
