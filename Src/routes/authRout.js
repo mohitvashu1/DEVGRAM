@@ -58,12 +58,12 @@ authRouter.post("/login", async (req, res) => {
       // Create a JWT Token
       const token = await user.getJWT();
       res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000),
+        expires: new Date(Date.now() +30 * 24 * 3600000),
       });
       res.send("Login Successful!!!");
     } else {
       throw new Error("Invalid credentials");
-    }
+    }   
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
