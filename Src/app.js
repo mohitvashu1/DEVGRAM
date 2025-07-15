@@ -4,6 +4,7 @@ const app =express();
 const cookieParser =require('cookie-parser');
 
 
+
 //Middlewares
 app.use(express.json());
 app.use(cookieParser());
@@ -13,11 +14,12 @@ app.use(cookieParser());
 const authRouter =require("./routes/authRout");
 const requestRouter =require("./routes/request");
 const profileRouter =require("./routes/profile");
+const userRouter = require("./routes/userRout");
 
 app.use("/",authRouter);
 app.use("/",requestRouter);
 app.use("/",profileRouter);
-
+app.use("/", userRouter);
 
 connectDB().then(()=>{
 console.log("Database Connected successfully");

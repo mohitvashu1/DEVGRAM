@@ -11,14 +11,13 @@
 -PATCH/profile/password
 
 ## Connection Request5 Router
--POST/request/send/interested:userId
--POST/request/send/ignore:userId
--POST/request/accept/acepted:userId
--POST/request/reject/rejected:userId
+-POST /request/send/:status/:userId 
+-POST /request/review/:status/:requestId
+
 
 ## User Router
 -GET/user/connection
--GET/user/request
+ GET /user/requests/received
 -GET/user/feed (Gets the profiles of other users on platform)
 
 Status: ignored, interested, accepeted, rejected
