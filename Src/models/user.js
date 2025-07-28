@@ -40,14 +40,16 @@ const userSchema= new mongoose.Schema({
       },
     },
     age: {
+      required: true,
       type: Number,
       min: 18,
     },
     gender: {
+      required: true,
       type: String,
       lowercase: true,
       enum: {
-        values: ["male", "female", "others"],
+        values: ["male", "female", "others","Male", "Female", "Others"],
         message: `{VALUE} is not a valid gender type`,
       },
      
@@ -72,8 +74,8 @@ const userSchema= new mongoose.Schema({
       type: String,
       default: "This is a default about of the user!",
     },
-    skills: {
-      type: [String],
+    hobbies: {
+      type: String,
     },
 },{
     timestamps: true,
