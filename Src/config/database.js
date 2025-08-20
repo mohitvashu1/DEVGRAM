@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 
 async function connectDB() {
-  await mongoose.connect('mongodb+srv://mohitvashuchoubey:C38qUwnucAsCReDn@devgram.rakrvby.mongodb.net/devGRAM');
+  await mongoose.connect(process.env.DB_SECRET_KEY);
   
 }
 
