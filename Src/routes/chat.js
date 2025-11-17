@@ -15,6 +15,7 @@ chatRouter.get("/chat/:targetUserId", userAuth, async (req, res) => {
       path: "messages.senderId",
       select: "firstName lastName photoUrl",
     });
+
     if (!chat) {
       chat = new Chat({
         participants: [userId, targetUserId],
@@ -22,6 +23,7 @@ chatRouter.get("/chat/:targetUserId", userAuth, async (req, res) => {
       });
       await chat.save();
     }
+
     res.json(chat);
   } catch (err) {
     console.error(err);
