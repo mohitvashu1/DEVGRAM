@@ -3,6 +3,10 @@ const connectDB=require("./config/database")
 const app =express();
 const cookieParser =require('cookie-parser');
 const cors = require("cors");
+const http = require('http');
+const initializeSocket = require("./utils/socket");
+const chatRouter = require("./routes/chat");
+
 require('dotenv').config()
 
 app.use(
@@ -29,10 +33,20 @@ app.use("/",authRouter);
 app.use("/",requestRouter);
 app.use("/",profileRouter);
 app.use("/", userRouter);
+app.use("/", chatRouter);
+
+
+
+const server = http.createServer(app);
+initializeSocket(server);;
+
+
+
+//Connect to Database and Start the server
 
 connectDB().then(()=>{
 console.log("Database Connected successfully");
-app.listen(3001,()=>{
+server.listen(3001,()=>{
     console.log("SERVER STARTED");
     
 });
